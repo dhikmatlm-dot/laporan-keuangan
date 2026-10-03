@@ -1,0 +1,12 @@
+{
+  "name": "sistem-laporan-keuangan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistem laporan keuangan klien: Google Apps Script (backend) + GitHub Pages (frontend)",
+  "scripts": {
+    "test": "node tools/test-backend.js",
+    "dev": "node tools/local-server.js",
+    "push": "clasp push -f",
+    "deploy": "clasp push -f && clasp deploy"
+  }
+}

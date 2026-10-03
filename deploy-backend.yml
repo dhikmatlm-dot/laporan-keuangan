@@ -1,0 +1,27 @@
+# Mengirim folder backend/ ke Apps Script dan memperbarui deployment web app yang sama (URL tidak berubah).
+# Secrets yang dibutuhkan (Settings > Secrets and variables > Actions > Secrets):
+#   CLASPRC_JSON  : isi file ~/.clasprc.json setelah menjalankan "clasp login" di komputer Anda
+#   SCRIPT_ID     : ID proyek Apps Script
+#   DEPLOYMENT_ID : ID deployment web app (dari "clasp deployments" atau menu Deploy > Manage deployments)
+name: Deploy backend (Apps Script)
+on:
+  push:
+    branches: [main]
+    paths: ['backend/**']
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/test-backend.js
+      - run: npm install -g @google/clasp
+      - name: Kredensial clasp
+        run: |
+          printf '%s' '${{ secrets.CLASPRC_JSON }}' > ~/.clasprc.json
+          printf '{"scriptId":"%s","rootDir":"backend"}' '${{ secrets.SCRIPT_ID }}' > .clasp.json
+      - run: clasp push -f
+      - run: clasp deploy -i '${{ secrets.DEPLOYMENT_ID }}' -d "GitHub ${{ github.sha }}"

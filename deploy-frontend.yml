@@ -1,0 +1,47 @@
+# Menerbitkan folder frontend/ ke GitHub Pages.
+# Aktifkan dulu: Settings > Pages > Source = "GitHub Actions".
+# Variables yang dibutuhkan (Settings > Secrets and variables > Actions > Variables):
+#   API_URL          : URL web app Apps Script (akhiran /exec)
+#   GOOGLE_CLIENT_ID : OAuth Client ID
+#   KONSULTAN        : (opsional) nama kantor konsultan untuk halaman masuk dan sampul laporan
+name: Deploy frontend (GitHub Pages)
+on:
+  push:
+    branches: [main]
+    paths: ['frontend/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tulis config.js dari variables
+        env:
+          API_URL: ${{ vars.API_URL }}
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          KONSULTAN: ${{ vars.KONSULTAN }}
+        run: |
+          if [ -n "$API_URL" ]; then
+            node -e "
+              const c = { API_URL: process.env.API_URL, GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+                APP_NAME: 'Sistem Laporan Keuangan', APP_SHORT: 'Laporan Keuangan',
+                KONSULTAN: process.env.KONSULTAN || 'Konsultan Akuntansi, Keuangan, Pajak, dan Manajemen', DEV_LOGIN: false };
+              require('fs').writeFileSync('frontend/config.js', 'window.APP_CONFIG = ' + JSON.stringify(c, null, 2) + ';\n');
+            "
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend
+      - id: deployment
+        uses: actions/deploy-pages@v4

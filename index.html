@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistem Laporan Keuangan</title>
+  <link rel="stylesheet" href="css/app.css">
+  <script src="config.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+</head>
+<body>
+  <div id="busy" class="hidden"></div>
+
+  <div id="login">
+    <div class="login-card">
+      <div class="brand-mark">LK</div>
+      <h1 id="login-title">Sistem Laporan Keuangan</h1>
+      <p id="login-sub"></p>
+      <div id="g-btn"></div>
+      <div id="dev-login" class="hidden">
+        <div class="note warn">Mode uji lokal: masuk tanpa Google.</div>
+        <input id="dev-email" value="admin@demo.test" style="width:100%;margin-bottom:8px" aria-label="Email">
+        <button id="dev-go" class="primary" style="width:100%">Masuk</button>
+        <p class="small muted" style="margin-top:10px">Coba juga: klien.a@demo.test</p>
+      </div>
+      <p id="login-msg" class="small" style="color:var(--bad);margin-top:14px"></p>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <aside id="side">
+      <div class="brand"><span class="brand-mark">LK</span><span id="side-brand">Laporan Keuangan</span></div>
+      <nav id="nav"></nav>
+      <div class="who" id="who"></div>
+    </aside>
+    <div id="main">
+      <header id="top">
+        <label>Klien<select id="sel-client"></select></label>
+        <label>Periode laporan
+          <span style="display:flex;gap:4px"><button id="per-prev" title="Bulan sebelumnya">‹</button><input type="month" id="sel-periode"><button id="per-next" title="Bulan berikutnya">›</button></span>
+        </label>
+        <span class="spacer"></span>
+      </header>
+      <main id="view"></main>
+    </div>
+  </div>
+
+  <div id="modal" class="hidden"></div>
+  <div id="toast"></div>
+  <div id="tip" class="hidden"></div>
+
+  <script src="js/core.js"></script>
+  <script src="js/views-data.js"></script>
+  <script src="js/views-report.js"></script>
+  <script src="js/views-analisa.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
